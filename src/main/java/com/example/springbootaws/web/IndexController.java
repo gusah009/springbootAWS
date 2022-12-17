@@ -1,7 +1,10 @@
 package com.example.springbootaws.web;
 
+import com.example.springbootaws.web.config.auth.LoginUser;
+import com.example.springbootaws.web.config.auth.dto.SessionUser;
 import com.example.springbootaws.web.dto.PostsResponseDto;
 import com.example.springbootaws.web.service.PostsService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +16,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class IndexController {
 
     private final PostsService postsService;
+//    private final HttpSession httpSession; // @LoginUser 사용으로 이제 안쓰임
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model,
+                        @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
+
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "index";
     }
 
